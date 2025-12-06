@@ -5,6 +5,7 @@ import '../css/ProjectDetails.css'
 import Modal from '../components/Modal.jsx'
 import TaskList from "../components/TaskList.jsx";
 import TaskDetails from "../components/TaskDetails.jsx";
+import { useUser } from "../context/UserContext.jsx";
 
 function ProjectDetails() {
     const {projectId} = useParams();
@@ -14,6 +15,8 @@ function ProjectDetails() {
 
     const [activeModal, setActiveModal] = useState(null); // 'tasks', 'stats', 'taskDetails'
     const [selectedTaskId, setSelectedTaskId] = useState(null);
+
+    const {user} = useUser();
 
     useEffect(() => {
         const fetchProjectDetails = async () => {
@@ -59,8 +62,12 @@ function ProjectDetails() {
         <div className="project-details-options-container">
             <p className="project-details-option" onClick = { () => setActiveModal('tasks')} >Moje zadania</p>
             <p className="project-details-option" onClick = { () => setActiveModal('stats')} >Statystyki</p>
-            {/* <p className="project-details-option" onClick = { () => handleAddTask()} >Dodaj zadanie</p>
-            <p className="project-details-option" onClick = { () => handleAddMember()} >Dodaj członka</p> */}
+            {user.is_manager && (
+                <>
+                <p className="project-details-option" onClick = { () => handleAddTask()} >Dodaj zadanie</p>
+                <p className="project-details-option" onClick = { () => handleAddMember()} >Dodaj członka</p>
+                </>
+                ) } 
         </div>
         <div className='project-details-box'>
             <h1 className='project-detail-title'>{project.title}</h1>

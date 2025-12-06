@@ -5,10 +5,13 @@ import Register from './pages/Register.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Layout from './components/Layout.jsx';
 import ProjectDetails from './pages/ProjectDetails.jsx';
+import { UserProvider } from './context/UserContext.jsx';
+
 
 function App() {
   return (
     <>
+    <UserProvider>
       <main>
         <Routes>
           {/* Not protected ulrs */}
@@ -24,6 +27,7 @@ function App() {
           </Route>
         </Routes>
       </main>
+      </UserProvider>
     </>
   );
 }
