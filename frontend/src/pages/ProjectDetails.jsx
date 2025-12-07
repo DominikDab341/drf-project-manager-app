@@ -7,12 +7,14 @@ import StatsModal from "../components/Modals/StatsModal.jsx";
 import AddTaskModal from '../components/Modals/AddTaskModal.jsx'
 import TasksListModal from "../components/Modals/TasksListModal.jsx";
 import TaskDetailsModal from "../components/Modals/TaskDetailsModal.jsx"
+import AddMemberModal from "../components/Modals/AddMemberModal.jsx";
 
 const MODALS = {
     TASKS: 'tasks',
     STATS: 'stats',
     TASK_DETAILS: 'taskDetails',
-    ADD_TASK: 'addTask'
+    ADD_TASK: 'addTask',
+    ADD_MEMBER: 'addMember'
 };
 
 function ProjectDetails() {
@@ -103,8 +105,8 @@ function ProjectDetails() {
             {user.is_manager && (
                 <>
                 <p className="project-details-option" onClick = { () => setActiveModal(MODALS.ADD_TASK)} >Dodaj zadanie</p>
-                {/* <p className="project-details-option" onClick = { () => handleAddMember()} >Dodaj członka</p>
-                <p className="project-details-option">Znajdź osobę bez projektów</p>
+                <p className="project-details-option" onClick = { () => setActiveModal(MODALS.ADD_MEMBER)} >Dodaj członka</p>
+                {/*<p className="project-details-option">Znajdź osobę bez projektów</p>
                 <p className="project-details-option">Usuń projekt</p> */}
                 </>
                 ) } 
@@ -167,6 +169,9 @@ function ProjectDetails() {
         setNewTaskData={setNewTaskData}
         handleCreateTask={handleCreateTask}
         members={members}
+    />
+
+    <AddMemberModal isOpen={activeModal === MODALS.ADD_MEMBER} onClose={() => setActiveModal(null)}
     />
     </div>
 )

@@ -5,6 +5,7 @@ from rest_framework import viewsets, permissions, status, filters
 from .models import Project
 from .serializers import ProjectSerializer, ProjectListSerializer
 from user.serializers import UserSerializer
+from user.models import User
 from rest_framework.decorators import action
 from user.permissions import IsManager
 from django_filters.rest_framework import DjangoFilterBackend
@@ -28,7 +29,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     pagination_class = ProjectPagination
 
     def get_permissions(self):
-        if self.action in ['create', 'update', 'destroy', 'partial_update','users_without_tasks']:
+        if self.action in ['create', 'update', 'destroy', 'partial_update','users_without_tasks', 'candidates']:
             permission_classes = [IsManager]
         else:
             permission_classes = [permissions.IsAuthenticated]
@@ -67,3 +68,11 @@ class ProjectViewSet(viewsets.ModelViewSet):
         users = project.get_members_without_tasks()
         serializer = self.get_serializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail =True, methods=['GET'])
+    def candidates(self, request, id):
+        project = self.get_object()
+        members_ids = project.members.values_list('id',flat=True)
+        candidates = User.objects.exclude(id__in=members_ids).exclude(id=request.user.id).exclude(is_superuser=True).exclude(role = User.Role.MANAGER)
+        serializer = UserSerializer(candidates, many=True)
+        return Response(serializer.data, status = status.HTTP_200_OK)
