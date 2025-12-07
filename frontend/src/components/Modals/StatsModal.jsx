@@ -1,4 +1,4 @@
-import Modal from '../components/Modal.jsx';
+import Modal from './Modal.jsx';
 
 function StatsModal({ isOpen, onClose, statistics }) {
     return (

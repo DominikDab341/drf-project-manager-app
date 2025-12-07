@@ -2,12 +2,11 @@ import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import apiClient from "../api/apiClient";
 import '../css/ProjectDetails.css';
-import Modal from '../components/Modal.jsx';
-import TaskList from "../components/TaskList.jsx";
-import TaskDetails from "../components/TaskDetails.jsx";
 import { useUser } from "../context/UserContext.jsx";
-import StatsModal from "../components/StatsModal.jsx";
-import AddTaskModal from '../components/AddTaskModal.jsx'
+import StatsModal from "../components/Modals/StatsModal.jsx";
+import AddTaskModal from '../components/Modals/AddTaskModal.jsx'
+import TasksListModal from "../components/Modals/TasksListModal.jsx";
+import TaskDetailsModal from "../components/Modals/TaskDetailsModal.jsx"
 
 const MODALS = {
     TASKS: 'tasks',
@@ -65,7 +64,7 @@ function ProjectDetails() {
 
     const handleTaskSelect = (taskId) => {
         setSelectedTaskId(taskId);
-        setActiveModal('taskDetails'); 
+        setActiveModal(MODALS.TASK_DETAILS); 
     }
 
     const handleCreateTask = async (e) => {
@@ -142,15 +141,20 @@ function ProjectDetails() {
         </div>
 
     {/* Tasks */}
-    <Modal isOpen ={activeModal === MODALS.TASKS} onClose={() => setActiveModal(null)}>
-        <TaskList projectId={projectId} onTaskClick={handleTaskSelect}/>
-    </Modal>
+    <TasksListModal 
+        isOpen={activeModal === MODALS.TASKS} 
+        onClose={() => setActiveModal(null)}
+        projectId={projectId}
+        onTaskClick={handleTaskSelect}
+    />
 
     {/* Task Details */}
-    <Modal isOpen ={activeModal === MODALS.TASK_DETAILS} onClose={() => setActiveModal(null)}>
-        <TaskDetails taskId={selectedTaskId} />
-        <button onClick={() => setActiveModal(MODALS.TASKS)}>Wróć do listy</button>
-    </Modal>
+    <TaskDetailsModal 
+        isOpen={activeModal === MODALS.TASK_DETAILS} 
+        onClose={() => setActiveModal(null)}
+        taskId={selectedTaskId}
+        onBack={() => setActiveModal(MODALS.TASKS)}
+    />
 
     {/* Statistics */}
     <StatsModal 

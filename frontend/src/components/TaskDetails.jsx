@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import apiClient from '../api/apiClient';
-import '/src/css/taskDetails.css';
+import '../css/taskDetails.css';
 
 
 function TaskDetails({ taskId }) {

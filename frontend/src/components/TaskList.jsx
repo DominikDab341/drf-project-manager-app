@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import apiClient from '../api/apiClient';
-import Modal from './Modal.jsx';
-import TaskDetails from './TaskDetails.jsx';
 
 function TaskList({ projectId = null, onTaskClick }) {
   const [taskList, setTaskList] = useState([]);
@@ -9,10 +7,6 @@ function TaskList({ projectId = null, onTaskClick }) {
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
-  const [isInternalModalOpen, setInternalModalOpen] = useState(false);
-
-  const [selectedTaskId, setSelectedTaskId] = useState(null);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -52,14 +46,6 @@ function TaskList({ projectId = null, onTaskClick }) {
     }
   };
 
-  const handleTaskSelect = (id) => {
-    if (onTaskClick) {
-      onTaskClick(id);
-    } else {
-      setInternalModalOpen(true);
-      setSelectedTaskId(id);
-    }
-  };
 
   return (
     <div className="task-list-box">
@@ -77,7 +63,7 @@ function TaskList({ projectId = null, onTaskClick }) {
                 ) : (
                   <div className="task-done">Zakończone</div>
                 )}
-                <h3 onClick={() => handleTaskSelect(task.id)} className="task-title">
+                <h3 onClick={() => onTaskClick(task.id)} className="task-title">
                   {task.title}
                 </h3>
                 <p className="task-description">{task.description}</p>
@@ -105,9 +91,6 @@ function TaskList({ projectId = null, onTaskClick }) {
           </button>
         </div>
       ) : null}
-      <Modal isOpen={isInternalModalOpen} onClose={() => setInternalModalOpen(false)}>
-        <TaskDetails taskId={selectedTaskId} />
-      </Modal>
     </div>
   );
 }
