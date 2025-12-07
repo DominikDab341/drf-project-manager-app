@@ -10,22 +10,29 @@ import { useUser } from "../context/UserContext.jsx";
 function ProjectDetails() {
     const {projectId} = useParams();
     const [project, setProject] = useState(null);
-    const [members, setMembers] = useState(null);
+    const [members, setMembers] = useState([]);
     const [statistics, setStatistics] = useState(null);
 
     const [activeModal, setActiveModal] = useState(null); // 'tasks', 'stats', 'taskDetails'
     const [selectedTaskId, setSelectedTaskId] = useState(null);
+
+    const [newTaskData, setNewTaskData] = useState({
+        title: '',
+        description: '',
+        deadline: '',
+        assigned_to: '' 
+    });
 
     const {user} = useUser();
 
     useEffect(() => {
         const fetchProjectDetails = async () => {
             try {
-                const ProjectResponse = await apiClient.get(`/projects/${projectId}/`);
-                const MembersResponse = await apiClient.get(`/projects/${projectId}/members`)
+                const projectResponse = await apiClient.get(`/projects/${projectId}/`);
+                const membersResponse = await apiClient.get(`/projects/${projectId}/members`)
 
-                setProject(ProjectResponse.data);
-                setMembers(MembersResponse.data)
+                setProject(projectResponse.data);
+                setMembers(membersResponse.data)
             } catch (error) {
                 console.error("Error fetching project details:", error);
             }
@@ -52,6 +59,29 @@ function ProjectDetails() {
         setActiveModal('taskDetails'); 
     }
 
+    const handleCreateTask = async (e) => {
+        e.preventDefault(); 
+        
+        try {
+            await apiClient.post('/tasks/', {
+                title: newTaskData.title,
+                description: newTaskData.description,
+                deadline: newTaskData.deadline || null,
+                assigned_to: newTaskData.assigned_to,
+                project: projectId,
+            });
+
+            
+            setActiveModal(null);
+            setNewTaskData({ title: '', description: '', deadline: '', assigned_to: '' });
+            alert("Zadanie dodane pomyślnie!");
+            
+        } catch (error) {
+            console.error("new task post error", error);
+            alert("Wystąpił błąd. Sprawdź, czy wypełniłeś wymagane pola.");
+        }
+    }
+
     if (!project) {
         return <div>Ten projekt nie istnieje</div>;
     }
@@ -64,8 +94,10 @@ function ProjectDetails() {
             <p className="project-details-option" onClick = { () => setActiveModal('stats')} >Statystyki</p>
             {user.is_manager && (
                 <>
-                <p className="project-details-option" onClick = { () => handleAddTask()} >Dodaj zadanie</p>
-                <p className="project-details-option" onClick = { () => handleAddMember()} >Dodaj członka</p>
+                <p className="project-details-option" onClick = { () => setActiveModal('addTask')} >Dodaj zadanie</p>
+                {/* <p className="project-details-option" onClick = { () => handleAddMember()} >Dodaj członka</p>
+                <p className="project-details-option">Znajdź osobę bez projektów</p>
+                <p className="project-details-option">Usuń projekt</p> */}
                 </>
                 ) } 
         </div>
@@ -125,6 +157,63 @@ function ProjectDetails() {
                 <p>Ładowanie statystyk...</p>
             )}
     </Modal>
+
+    {/* Add task */}
+    <Modal isOpen={activeModal === 'addTask'} onClose={() => setActiveModal(null)}>
+            <h2>Dodaj zadanie</h2>
+            
+            <form onSubmit={handleCreateTask} className="add-task-form">
+                
+                <div className="form-group">
+                    <label>Tytuł</label>
+                    <input 
+                        type="text" 
+                        required
+                        value={newTaskData.title}
+                        onChange={(e) => setNewTaskData({...newTaskData, title: e.target.value})}
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Przypisz do</label>
+                    <select 
+                        required
+                        value={newTaskData.assigned_to}
+                        onChange={(e) => setNewTaskData({...newTaskData, assigned_to: e.target.value})}
+                    >                        
+                    <option value="">Wybierz pracownika</option>
+                    
+                    {members && members.map((member) => (
+                        <option key={member.id} value={member.id}>
+                            {member.first_name} {member.last_name} ({member.username})
+                        </option>
+                    ))}
+                    </select>
+                </div>
+
+                <div className="form-group">
+                    <label>Deadline (opcjonalne)</label>
+                    <input 
+                        type="date" 
+                        value={newTaskData.deadline}
+                        onChange={(e) => setNewTaskData({...newTaskData, deadline: e.target.value})}
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label>Opis</label>
+                    <textarea 
+                        required
+                        rows="4"
+                        value={newTaskData.description}
+                        onChange={(e) => setNewTaskData({...newTaskData, description: e.target.value})}
+                    />
+                </div>
+
+                <button type="submit" className="submit-btn">
+                    Utwórz Zadanie
+                </button>
+            </form>
+        </Modal>
     </div>
 )
 };
