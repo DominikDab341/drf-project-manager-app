@@ -1,11 +1,20 @@
 import {useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import apiClient from "../api/apiClient";
-import '../css/ProjectDetails.css'
-import Modal from '../components/Modal.jsx'
+import '../css/ProjectDetails.css';
+import Modal from '../components/Modal.jsx';
 import TaskList from "../components/TaskList.jsx";
 import TaskDetails from "../components/TaskDetails.jsx";
 import { useUser } from "../context/UserContext.jsx";
+import StatsModal from "../components/StatsModal.jsx";
+import AddTaskModal from '../components/AddTaskModal.jsx'
+
+const MODALS = {
+    TASKS: 'tasks',
+    STATS: 'stats',
+    TASK_DETAILS: 'taskDetails',
+    ADD_TASK: 'addTask'
+};
 
 function ProjectDetails() {
     const {projectId} = useParams();
@@ -13,7 +22,7 @@ function ProjectDetails() {
     const [members, setMembers] = useState([]);
     const [statistics, setStatistics] = useState(null);
 
-    const [activeModal, setActiveModal] = useState(null); // 'tasks', 'stats', 'taskDetails'
+    const [activeModal, setActiveModal] = useState(null);
     const [selectedTaskId, setSelectedTaskId] = useState(null);
 
     const [newTaskData, setNewTaskData] = useState({
@@ -90,11 +99,11 @@ function ProjectDetails() {
     return (
     <div className='project-details-container'>
         <div className="project-details-options-container">
-            <p className="project-details-option" onClick = { () => setActiveModal('tasks')} >Moje zadania</p>
-            <p className="project-details-option" onClick = { () => setActiveModal('stats')} >Statystyki</p>
+            <p className="project-details-option" onClick = { () => setActiveModal(MODALS.TASKS)} >Moje zadania</p>
+            <p className="project-details-option" onClick = { () => setActiveModal(MODALS.STATS)} >Statystyki</p>
             {user.is_manager && (
                 <>
-                <p className="project-details-option" onClick = { () => setActiveModal('addTask')} >Dodaj zadanie</p>
+                <p className="project-details-option" onClick = { () => setActiveModal(MODALS.ADD_TASK)} >Dodaj zadanie</p>
                 {/* <p className="project-details-option" onClick = { () => handleAddMember()} >Dodaj członka</p>
                 <p className="project-details-option">Znajdź osobę bez projektów</p>
                 <p className="project-details-option">Usuń projekt</p> */}
@@ -133,87 +142,28 @@ function ProjectDetails() {
         </div>
 
     {/* Tasks */}
-    <Modal isOpen ={activeModal === 'tasks'} onClose={() => setActiveModal(null)}>
+    <Modal isOpen ={activeModal === MODALS.TASKS} onClose={() => setActiveModal(null)}>
         <TaskList projectId={projectId} onTaskClick={handleTaskSelect}/>
     </Modal>
 
     {/* Task Details */}
-    <Modal isOpen ={activeModal === 'taskDetails'} onClose={() => setActiveModal(null)}>
+    <Modal isOpen ={activeModal === MODALS.TASK_DETAILS} onClose={() => setActiveModal(null)}>
         <TaskDetails taskId={selectedTaskId} />
-        <button onClick={() => setActiveModal('tasks')}>Wróć do listy</button>
+        <button onClick={() => setActiveModal(MODALS.TASKS)}>Wróć do listy</button>
     </Modal>
 
     {/* Statistics */}
-    <Modal isOpen ={activeModal === 'stats'} onClose={() => setActiveModal(null)}>
-        <h2>Statystyki Projektu</h2>
-            {statistics ? (
-                <div>
-                    <p><strong>Do zrobienia:</strong> {statistics.tasks_todo}</p>
-                    <p><strong>W trakcie:</strong> {statistics.tasks_in_progress || 0}</p>
-                    <p><strong>Zakończone:</strong> {statistics.done_tasks}</p>
-                    <p><strong>Razem:</strong> {statistics.total_number_of_tasks}</p>
-                </div>
-            ) : (
-                <p>Ładowanie statystyk...</p>
-            )}
-    </Modal>
+    <StatsModal 
+        isOpen={activeModal === MODALS.STATS} onClose={() => setActiveModal(null)} statistics={statistics}
+    />
 
     {/* Add task */}
-    <Modal isOpen={activeModal === 'addTask'} onClose={() => setActiveModal(null)}>
-            <h2>Dodaj zadanie</h2>
-            
-            <form onSubmit={handleCreateTask} className="add-task-form">
-                
-                <div className="form-group">
-                    <label>Tytuł</label>
-                    <input 
-                        type="text" 
-                        required
-                        value={newTaskData.title}
-                        onChange={(e) => setNewTaskData({...newTaskData, title: e.target.value})}
-                    />
-                </div>
-                <div className="form-group">
-                    <label>Przypisz do</label>
-                    <select 
-                        required
-                        value={newTaskData.assigned_to}
-                        onChange={(e) => setNewTaskData({...newTaskData, assigned_to: e.target.value})}
-                    >                        
-                    <option value="">Wybierz pracownika</option>
-                    
-                    {members && members.map((member) => (
-                        <option key={member.id} value={member.id}>
-                            {member.first_name} {member.last_name} ({member.username})
-                        </option>
-                    ))}
-                    </select>
-                </div>
-
-                <div className="form-group">
-                    <label>Deadline (opcjonalne)</label>
-                    <input 
-                        type="date" 
-                        value={newTaskData.deadline}
-                        onChange={(e) => setNewTaskData({...newTaskData, deadline: e.target.value})}
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label>Opis</label>
-                    <textarea 
-                        required
-                        rows="4"
-                        value={newTaskData.description}
-                        onChange={(e) => setNewTaskData({...newTaskData, description: e.target.value})}
-                    />
-                </div>
-
-                <button type="submit" className="submit-btn">
-                    Utwórz Zadanie
-                </button>
-            </form>
-        </Modal>
+    <AddTaskModal  isOpen={activeModal === MODALS.ADD_TASK} onClose={() => setActiveModal(null)}
+        newTaskData={newTaskData}
+        setNewTaskData={setNewTaskData}
+        handleCreateTask={handleCreateTask}
+        members={members}
+    />
     </div>
 )
 };
