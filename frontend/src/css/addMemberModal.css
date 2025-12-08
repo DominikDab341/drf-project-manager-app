@@ -1,0 +1,115 @@
+.add-member-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.candidates-list {
+    max-height: 350px;
+    overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fcfcfc;
+    padding: 5px;
+    scrollbar-width: thin;
+    scrollbar-color: #c0c0c0 #f0f0f0;
+}
+
+.candidates-list::-webkit-scrollbar {
+    width: 8px;
+}
+.candidates-list::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+.candidates-list::-webkit-scrollbar-thumb {
+    background-color: #c0c0c0;
+    border-radius: 4px;
+    border: 2px solid #f0f0f0;
+}
+
+.candidate-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    background-color: white;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.candidate-item:last-child {
+    margin-bottom: 0;
+}
+
+.candidate-item:hover {
+    background-color: #f0edfa;
+    border-color: #d0c4f0;
+}
+
+.candidate-item.selected {
+    background-color: #9370DB;
+    color: white;
+    border-color: #9370DB;
+    box-shadow: 0 2px 5px rgba(147, 112, 219, 0.3);
+    transform: translateY(-1px);
+}
+
+.candidate-name {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.candidate-username {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.candidate-item.selected .candidate-username {
+    color: #e0d8f7;
+}
+
+.no-candidates {
+    padding: 30px;
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    background-color: white;
+    border-radius: 6px;
+}
+
+.submit-btn {
+    background-color: #9370DB;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.submit-btn:hover {
+    background-color: #8261c5;
+}
+
+.submit-btn:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.add-member-container + p {
+    text-align: center;
+    color: #666;
+    font-size: 1.1rem;
+    padding: 20px;
+}

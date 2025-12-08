@@ -35,24 +35,32 @@ function ProjectDetails() {
 
     const {user} = useUser();
 
-    useEffect(() => {
-        const fetchProjectDetails = async () => {
-            try {
-                const projectResponse = await apiClient.get(`/projects/${projectId}/`);
-                const membersResponse = await apiClient.get(`/projects/${projectId}/members`)
-
-                setProject(projectResponse.data);
-                setMembers(membersResponse.data)
-            } catch (error) {
-                console.error("Error fetching project details:", error);
-            }
+    const fetchMembers = async () => {
+        try {
+            const membersResponse = await apiClient.get(`/projects/${projectId}/members`);
+            setMembers(membersResponse.data);
+        } catch (error) {
+            console.error("Error fetching members:", error);
         }
-        fetchProjectDetails();
-    },[projectId])
+    };
+
+    const fetchProjectData = async () => {
+        try {
+            const projectResponse = await apiClient.get(`/projects/${projectId}/`);
+            setProject(projectResponse.data);
+        } catch (error) {
+            console.error("Error fetching project:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchProjectData();
+        fetchMembers();
+    }, [projectId]);
 
 
     useEffect(() => {
-        if (activeModal === 'stats'){
+        if (activeModal === MODALS.STATS){
             const fetchStats = async () => { 
                 try {
                     const response = await apiClient.get(`/projects/${projectId}/tasks-status`)
@@ -102,7 +110,7 @@ function ProjectDetails() {
         <div className="project-details-options-container">
             <p className="project-details-option" onClick = { () => setActiveModal(MODALS.TASKS)} >Moje zadania</p>
             <p className="project-details-option" onClick = { () => setActiveModal(MODALS.STATS)} >Statystyki</p>
-            {user.is_manager && (
+            {user?.is_manager && (
                 <>
                 <p className="project-details-option" onClick = { () => setActiveModal(MODALS.ADD_TASK)} >Dodaj zadanie</p>
                 <p className="project-details-option" onClick = { () => setActiveModal(MODALS.ADD_MEMBER)} >Dodaj członka</p>
@@ -171,7 +179,11 @@ function ProjectDetails() {
         members={members}
     />
 
-    <AddMemberModal isOpen={activeModal === MODALS.ADD_MEMBER} onClose={() => setActiveModal(null)}
+    <AddMemberModal 
+        isOpen={activeModal === MODALS.ADD_MEMBER} 
+        onClose={() => setActiveModal(null)}
+        projectId={projectId}
+        onMemberAdded = {fetchMembers}
     />
     </div>
 )

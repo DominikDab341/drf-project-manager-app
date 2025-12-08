@@ -29,7 +29,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     pagination_class = ProjectPagination
 
     def get_permissions(self):
-        if self.action in ['create', 'update', 'destroy', 'partial_update','users_without_tasks', 'candidates']:
+        if self.action in ['create', 'update', 'destroy', 'partial_update','users_without_tasks', 'candidates', 'add_member']:
             permission_classes = [IsManager]
         else:
             permission_classes = [permissions.IsAuthenticated]
@@ -76,3 +76,29 @@ class ProjectViewSet(viewsets.ModelViewSet):
         candidates = User.objects.exclude(id__in=members_ids).exclude(id=request.user.id).exclude(is_superuser=True).exclude(role = User.Role.MANAGER)
         serializer = UserSerializer(candidates, many=True)
         return Response(serializer.data, status = status.HTTP_200_OK)
+
+    @action(detail=True, methods=['POST'])
+    def add_member(self, request, id):
+        project = self.get_object()
+        user_id = request.data.get('user_id')
+
+        if not user_id:
+            return Response(
+                {'error': 'No user_id field provided'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            user = User.objects.get(id=user_id)
+            project.members.add(user)
+            
+            return Response(
+                {'status': 'success', 'message': f'You have added {user.username}'}, 
+                status=status.HTTP_200_OK
+            )
+        
+        except User.DoesNotExist:
+            return Response(
+                {'error': 'That user doesnt exist'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
