@@ -27,7 +27,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['create','destroy']:
             permission_classes = [IsManager]
-        elif self.action in ['mark_task_done','mark_task_in_progress']:
+        elif self.action in ['update', 'partial_update']:
             permission_classes = [IsTaskOwner]
         else:
             permission_classes = [permissions.IsAuthenticated]
@@ -35,8 +35,11 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        users_tasks = Task.objects.filter( Q(assigned_to=user)).distinct()
-        return users_tasks
+        
+        if getattr(user, 'role') == 'MANAGER' or user.is_superuser:
+             return Task.objects.all()
+        
+        return Task.objects.filter(assigned_to=user)
     
     def get_serializer_class(self):
         if self.action == 'list':
@@ -44,18 +47,4 @@ class TaskViewSet(viewsets.ModelViewSet):
         else:
             return TaskSerializer
 
-    @action(detail=True, methods=['PATCH'], url_path='task-in-progress')
-    def mark_task_in_progress(self, request, id):
-        task = Task.objects.get(id=id)
-        task.status = 'IN_PROGRESS'
-        task.save()
-        return Response({'message': 'Task marked as in progress'}, status=status.HTTP_200_OK)
-
-
-    @action(detail=True, methods=['PATCH'], url_path='task-done')
-    def mark_task_done(self, request, id):
-        task = Task.objects.get(id=id)
-        task.status = 'DONE'
-        task.save()
-        return Response({'message': 'Task marked as done'}, status=status.HTTP_200_OK)
 

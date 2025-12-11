@@ -9,29 +9,22 @@ function TaskDetails({ taskId }) {
 
   const [commentContent, setCommentContent] = useState('');
 
-  const fetchComments = async () => {
+  const fetchData = async () => {
     try {
-      const commentsResponse = await apiClient.get(`/comments/?task=${taskId}`);
-      setComments(commentsResponse.data.results);
+        const [taskRes, commentsRes] = await Promise.all([
+        apiClient.get(`/tasks/${taskId}/`),
+        apiClient.get(`/comments/?task=${taskId}`)
+      ]);
+      
+      setTask(taskRes.data);
+      setComments(commentsRes.data.results);
     } catch (error) {
-      console.error('Error fetching comments:', error);
+      console.error('Błąd pobierania danych:', error);
     }
   };
 
   useEffect(() => {
-    if (!taskId) return;
-
-    const fetchTaskDetails = async () => {
-      try {
-        const response = await apiClient.get(`/tasks/${taskId}/`);
-        setTask(response.data);
-
-      } catch (error) {
-        console.error('Error fetching task details:', error);
-      }
-    };
-    fetchTaskDetails();
-    fetchComments();
+    if (taskId) fetchData();
   }, [taskId]);
 
   const handleSendComment = async () => {
@@ -62,7 +55,7 @@ return (
         </div>
 
         <p><strong>Status:</strong> {task.status}</p>
-        <p><strong>Deadline:</strong> {task.deadline || "Brak"}</p>
+        <p><strong>Deadline:</strong> {task.deadline || "Brak"}</p>        
       </div>
 
       <div className="task-comments-section">
