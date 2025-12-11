@@ -70,3 +70,59 @@
 .task-comment-submit-btn:hover {
     background-color: #7B68EE; 
 }
+
+.status-section {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.status-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 5px;
+}
+
+.status-btn {
+    padding: 8px 12px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.status-btn.todo {
+    background-color: #e9ecef;
+    color: #495057;
+    border-color: #ced4da;
+}
+
+.status-btn.todo:hover {
+    background-color: #dde2e6;
+    border-color: #adb5bd;
+}
+
+.status-btn.progress {
+    background-color: #fff3cd;
+    color: #856404;
+    border-color: #ffeeba;
+}
+
+.status-btn.progress:hover {
+    background-color: #ffe8a1;
+    border-color: #ffe8a1;
+}
+
+.status-btn.done {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.status-btn.done:hover {
+    background-color: #c3e6cb;
+    border-color: #b1dfbb;
+}
