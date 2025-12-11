@@ -1,22 +1,30 @@
 import { useEffect, useState } from 'react';
 import apiClient from '../api/apiClient';
+import '../css/pagination.css';
 
 function NotificationList() {
   const [notifications, setNotifications] = useState([]);
   const [error, setError] = useState('');
 
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await apiClient.get('notifications/');
+        const response = await apiClient.get(`notifications/?page=${page}`);
+
         setNotifications(response.data.results);
         setError('');
+
+        const totalPages = Math.ceil(response.data.count / 3);
+        setTotalPages(totalPages);
       } catch (error) {
-        console.error('Błąd pobierania powiadomień', error);
+        console.error('Error during Notification fetch', error);
       }
     };
     fetchNotifications();
-  }, []);
+  }, [page]);
 
   const formatDate = (isoString) => {
     const date = new Date(isoString);
@@ -49,6 +57,18 @@ function NotificationList() {
     }
   };
 
+    const handleChangeToNextPage = () => {
+    if (page < totalPages) {
+      setPage(page + 1);
+    }
+  };
+
+  const handleChangeToPreviousPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
+
   return (
     <div className="notification-list-box">
       <h1>Lista powiadomień</h1>
@@ -71,6 +91,22 @@ function NotificationList() {
           </div>
         ))
       )}
+      {totalPages > 1 ? (
+        <div className="pagination-buttons">
+          <button onClick={handleChangeToPreviousPage} disabled={page === 1}>
+            Poprzednia
+          </button>
+
+          <span>
+            {' '}
+            Strona {page} z {totalPages}{' '}
+          </span>
+
+          <button onClick={handleChangeToNextPage} disabled={page === totalPages}>
+            Następna
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }
