@@ -1,9 +1,10 @@
 import Modal from './Modal.jsx';
+import "../../css/AddTaskModal.css"
 
 function AddTaskModal({ isOpen, onClose, newTaskData, setNewTaskData, handleCreateTask, members }){
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
-            <h2>Dodaj zadanie</h2>
+            <h2 className='task-form-h2' >Dodaj zadanie</h2>
             <form onSubmit={handleCreateTask} className="add-task-form">
                 
                 <div className="form-group">
