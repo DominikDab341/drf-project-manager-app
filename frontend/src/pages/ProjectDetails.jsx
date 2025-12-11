@@ -8,13 +8,15 @@ import AddTaskModal from '../components/Modals/AddTaskModal.jsx'
 import TasksListModal from "../components/Modals/TasksListModal.jsx";
 import TaskDetailsModal from "../components/Modals/TaskDetailsModal.jsx"
 import AddMemberModal from "../components/Modals/AddMemberModal.jsx";
+import MembersWithoutTasksModal from '../components/Modals/MembersWithoutTasksModal.jsx'
 
 const MODALS = {
     TASKS: 'tasks',
     STATS: 'stats',
     TASK_DETAILS: 'taskDetails',
     ADD_TASK: 'addTask',
-    ADD_MEMBER: 'addMember'
+    ADD_MEMBER: 'addMember',
+    FIND_MEMBERS_WITHOUT_TASK: 'findMembersWithoutTask'
 };
 
 function ProjectDetails() {
@@ -114,8 +116,8 @@ function ProjectDetails() {
                 <>
                 <p className="project-details-option" onClick = { () => setActiveModal(MODALS.ADD_TASK)} >Dodaj zadanie</p>
                 <p className="project-details-option" onClick = { () => setActiveModal(MODALS.ADD_MEMBER)} >Dodaj członka</p>
-                {/*<p className="project-details-option">Znajdź osobę bez projektów</p>
-                <p className="project-details-option">Usuń projekt</p> */}
+                <p className="project-details-option" onClick = {() => setActiveModal(MODALS.FIND_MEMBERS_WITHOUT_TASK)}>Wyświetl osoby bez zadań</p>
+                {/* <p className="project-details-option">Usuń projekt</p> */}
                 </>
                 ) } 
         </div>
@@ -184,6 +186,12 @@ function ProjectDetails() {
         onClose={() => setActiveModal(null)}
         projectId={projectId}
         onMemberAdded = {fetchMembers}
+    />
+
+    <MembersWithoutTasksModal 
+        isOpen={activeModal === MODALS.FIND_MEMBERS_WITHOUT_TASK} 
+        onClose={() => setActiveModal(null)}
+        projectId={projectId}
     />
     </div>
 )

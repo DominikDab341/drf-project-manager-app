@@ -66,7 +66,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def users_without_tasks(self, request,id):
         project = self.get_object()
         users = project.get_members_without_tasks()
-        serializer = self.get_serializer(users, many=True)
+        serializer = UserSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(detail =True, methods=['GET'])
