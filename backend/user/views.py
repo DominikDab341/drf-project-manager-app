@@ -29,18 +29,6 @@ class UserViewSet(viewsets.ModelViewSet):
         users = User.get_users_without_projects()
         serializer = self.get_serializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    @action(detail=False, methods=['GET'], url_path='my-stats')
-    def my_stats(self, request):
-        user = request.user
-        return Response({
-            'total_tasks': user.get_total_tasks(),
-            'completed_tasks': user.get_completed_tasks(),
-            'pending_tasks': user.get_pending_tasks(),
-            'in_progress_tasks': user.get_in_progress_tasks(),
-            'projects': user.get_projects_count(),
-            'owned_projects': user.get_owned_projects(),
-        })
     
     @action(detail= False, methods=['GET'], url_path='me')
     def me(self,request):

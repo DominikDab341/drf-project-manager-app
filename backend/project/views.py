@@ -56,11 +56,13 @@ class ProjectViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['GET'], url_path='tasks-status')
     def tasks_status(self, request, id):
         project = self.get_object()
-        tasks_to_do = project.get_number_of_todo_tasks()
-        done_tasks = project.get_number_of_done_tasks()
-        tasks_in_progress = project.get_number_of_in_progress_tasks()
-        total_number_of_tasks = tasks_to_do + done_tasks + tasks_in_progress
-        return Response({'tasks_todo':tasks_to_do, 'done_tasks': done_tasks, 'tasks_in_progress': tasks_in_progress, 'total_number_of_tasks': total_number_of_tasks})
+        stats = project.get_statistics()
+        return Response({
+            'tasks_todo': stats['todo'],
+            'done_tasks': stats['done'],
+            'tasks_in_progress': stats['in_progress'],
+            'total_number_of_tasks': stats['total']
+        })
 
     @action(detail=True, methods=['GET'], url_path='without-tasks')
     def users_without_tasks(self, request,id):
