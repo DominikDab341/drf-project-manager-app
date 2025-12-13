@@ -1,7 +1,40 @@
+import { useState } from "react";
 import Modal from './Modal.jsx';
 import "../../css/AddTaskModal.css"
+import apiClient from "../../api/apiClient";
 
-function AddTaskModal({ isOpen, onClose, newTaskData, setNewTaskData, handleCreateTask, members }){
+function AddTaskModal({ isOpen, onClose, projectId, members }){
+
+    const [newTaskData, setNewTaskData] = useState({
+        title: '',
+        description: '',
+        deadline: '',
+        assigned_to: '' 
+    });
+
+    const handleCreateTask = async (e) => {
+        e.preventDefault(); 
+        
+        try {
+            await apiClient.post('/tasks/', {
+                title: newTaskData.title,
+                description: newTaskData.description,
+                deadline: newTaskData.deadline || null,
+                assigned_to: newTaskData.assigned_to,
+                project: projectId,
+            });
+
+            
+            onClose();
+            setNewTaskData({ title: '', description: '', deadline: '', assigned_to: '' });
+            alert("Zadanie dodane pomyślnie!");
+            
+        } catch (error) {
+            console.error("new task post error", error);
+            alert("Wystąpił błąd. Sprawdź, czy wypełniłeś wymagane pola.");
+        }
+    }
+
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <h2 className='task-form-h2' >Dodaj zadanie</h2>

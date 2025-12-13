@@ -28,12 +28,6 @@ function ProjectDetails() {
     const [activeModal, setActiveModal] = useState(null);
     const [selectedTaskId, setSelectedTaskId] = useState(null);
 
-    const [newTaskData, setNewTaskData] = useState({
-        title: '',
-        description: '',
-        deadline: '',
-        assigned_to: '' 
-    });
 
     const {user} = useUser();
 
@@ -79,28 +73,6 @@ function ProjectDetails() {
         setActiveModal(MODALS.TASK_DETAILS); 
     }
 
-    const handleCreateTask = async (e) => {
-        e.preventDefault(); 
-        
-        try {
-            await apiClient.post('/tasks/', {
-                title: newTaskData.title,
-                description: newTaskData.description,
-                deadline: newTaskData.deadline || null,
-                assigned_to: newTaskData.assigned_to,
-                project: projectId,
-            });
-
-            
-            setActiveModal(null);
-            setNewTaskData({ title: '', description: '', deadline: '', assigned_to: '' });
-            alert("Zadanie dodane pomyślnie!");
-            
-        } catch (error) {
-            console.error("new task post error", error);
-            alert("Wystąpił błąd. Sprawdź, czy wypełniłeś wymagane pola.");
-        }
-    }
 
     if (!project) {
         return <div>Ten projekt nie istnieje</div>;
@@ -174,10 +146,10 @@ function ProjectDetails() {
     />
 
     {/* Add task */}
-    <AddTaskModal  isOpen={activeModal === MODALS.ADD_TASK} onClose={() => setActiveModal(null)}
-        newTaskData={newTaskData}
-        setNewTaskData={setNewTaskData}
-        handleCreateTask={handleCreateTask}
+    <AddTaskModal  
+        isOpen={activeModal === MODALS.ADD_TASK} 
+        onClose={() => setActiveModal(null)}
+        projectId={projectId}
         members={members}
     />
 
