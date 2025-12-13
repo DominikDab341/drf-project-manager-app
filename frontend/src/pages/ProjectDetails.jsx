@@ -23,7 +23,6 @@ function ProjectDetails() {
     const {projectId} = useParams();
     const [project, setProject] = useState(null);
     const [members, setMembers] = useState([]);
-    const [statistics, setStatistics] = useState(null);
 
     const [activeModal, setActiveModal] = useState(null);
     const [selectedTaskId, setSelectedTaskId] = useState(null);
@@ -54,19 +53,6 @@ function ProjectDetails() {
         fetchMembers();
     }, [projectId]);
 
-
-    useEffect(() => {
-        if (activeModal === MODALS.STATS){
-            const fetchStats = async () => { 
-                try {
-                    const response = await apiClient.get(`/projects/${projectId}/tasks-status`)
-                    setStatistics(response.data)
-                } catch(error) { 
-                    console.error("Error fetching project statistics", error) }
-            };
-            fetchStats();
-        }
-    }, [activeModal, projectId]);
 
     const handleTaskSelect = (taskId) => {
         setSelectedTaskId(taskId);
@@ -142,7 +128,9 @@ function ProjectDetails() {
 
     {/* Statistics */}
     <StatsModal 
-        isOpen={activeModal === MODALS.STATS} onClose={() => setActiveModal(null)} statistics={statistics}
+        isOpen={activeModal === MODALS.STATS} 
+        onClose={() => setActiveModal(null)} 
+        projectId={projectId}
     />
 
     {/* Add task */}
