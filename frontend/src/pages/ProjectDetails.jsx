@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, useCallback} from "react";
 import {useParams} from "react-router-dom";
 import apiClient from "../api/apiClient";
 import '../css/ProjectDetails.css';
@@ -30,28 +30,28 @@ function ProjectDetails() {
 
     const {user} = useUser();
 
-    const fetchMembers = async () => {
+    const fetchMembers = useCallback(async () => {
         try {
             const membersResponse = await apiClient.get(`/projects/${projectId}/members`);
             setMembers(membersResponse.data);
         } catch (error) {
             console.error("Error fetching members:", error);
         }
-    };
+    },[projectId]);
 
-    const fetchProjectData = async () => {
+    const fetchProjectData = useCallback(async () => {
         try {
             const projectResponse = await apiClient.get(`/projects/${projectId}/`);
             setProject(projectResponse.data);
         } catch (error) {
             console.error("Error fetching project:", error);
         }
-    };
+    }, [projectId]);
 
     useEffect(() => {
         fetchProjectData();
         fetchMembers();
-    }, [projectId]);
+    }, [fetchProjectData, fetchMembers]);
 
 
     const handleTaskSelect = (taskId) => {
@@ -145,7 +145,6 @@ function ProjectDetails() {
         isOpen={activeModal === MODALS.ADD_MEMBER} 
         onClose={() => setActiveModal(null)}
         projectId={projectId}
-        onMemberAdded = {fetchMembers}
     />
 
     <MembersWithoutTasksModal 

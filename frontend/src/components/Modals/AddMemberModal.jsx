@@ -3,7 +3,7 @@ import Modal from './Modal.jsx';
 import { useEffect, useState } from 'react';
 import '../../css/addMemberModal.css'
 
-function AddMemberModal({ isOpen, onClose, projectId, onMemberAdded }) {
+function AddMemberModal({ isOpen, onClose, projectId}) {
     const [candidates, setCandidates] = useState([])
 
     const [selectedUserId, setSelectedUserId] = useState(null); 
@@ -33,9 +33,6 @@ function AddMemberModal({ isOpen, onClose, projectId, onMemberAdded }) {
         try {
             await apiClient.post(`/projects/${projectId}/add_member/`, {user_id: selectedUserId});
 
-            if (onMemberAdded) {
-                onMemberAdded();
-            }
             onClose();
         }catch(error){
             console.error("add member has failed ", error);
