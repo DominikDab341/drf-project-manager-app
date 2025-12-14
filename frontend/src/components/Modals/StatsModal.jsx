@@ -6,17 +6,19 @@ function StatsModal({ isOpen, onClose, projectId }){ {
         const [statistics, setStatistics] = useState(null);
 
         useEffect(() => {
-            {
-            const fetchStats = async () => { 
-                try {
-                    const response = await apiClient.get(`/projects/${projectId}/tasks-status`)
-                    setStatistics(response.data)
-                } catch(error) { 
-                    console.error("Error fetching project statistics", error) }
-            };
-            fetchStats();
+            if (isOpen){
+                {
+                const fetchStats = async () => { 
+                    try {
+                        const response = await apiClient.get(`/projects/${projectId}/tasks-status`)
+                        setStatistics(response.data)
+                    } catch(error) { 
+                        console.error("Error fetching project statistics", error) }
+                };
+                fetchStats();
+                }
             }
-        }, [projectId]);
+        }, [projectId, isOpen]);
 
 
     return (
