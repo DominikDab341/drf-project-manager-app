@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,7 +50,8 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_spectacular',
     'corsheaders',
-
+    'chat',
+    'channels',
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -168,3 +170,14 @@ SPECTACULAR_SETTINGS = {
 
 
 AUTH_USER_MODEL = 'user.User'
+
+ASGI_APPLICATION = 'drf_project_manager_app.asgi.application' 
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
