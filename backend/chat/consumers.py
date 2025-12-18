@@ -1,5 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.db import database_sync_to_async
+from .models import ChatMessage
 
 
 WS_CLOSE_AUTH_FAILED = 4003
@@ -38,6 +40,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return
 
         username = user.username  
+
+        @database_sync_to_async
+        def save_message(project_id, user, message):
+            return ChatMessage.objects.create(
+                project_id=project_id,
+                sender=user,
+                message=message
+            )
+        
+        await save_message(self.project_id, user, message)
+        
 
         await self.channel_layer.group_send(
             self.room_group_name,
