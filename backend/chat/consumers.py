@@ -1,10 +1,17 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 
+
+WS_CLOSE_AUTH_FAILED = 4003
+
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.project_id = self.scope['url_route']['kwargs']['project_id']
-        self.room_group_name = f'chat_{self.project_id}'
+        user = self.scope.get("user")
+        if not user:
+            await self.close(code=WS_CLOSE_AUTH_FAILED)
+            return
+        self.project_id = self.scope["url_route"]["kwargs"]["project_id"]
+        self.room_group_name = f"chat_{self.project_id}"
 
         await self.channel_layer.group_add(
             self.room_group_name,
@@ -19,46 +26,30 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-    #Used for tests without authentication
     async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-        username = text_data_json.get('username', 'Anonim')
+        data = json.loads(text_data)
+        message = data.get("message", "").strip()
+        if not message:
+            return
+
+        user = self.scope["user"]
+        if not user:
+            await self.close(code=WS_CLOSE_AUTH_FAILED)
+            return
+
+        username = user.username  
 
         await self.channel_layer.group_send(
             self.room_group_name,
             {
-                'type': 'chat_message',
-                'message': message,
-                'username': username
+                "type": "chat_message",
+                "message": message,
+                "username": username,
             }
         )
 
-    # async def receive(self, text_data):
-    #     text_data_json = json.loads(text_data)
-    #     message = text_data_json['message']  
-    #     user = self.scope["user"]
-        
-    #     if user.is_authenticated:
-    #         username = user.username
-    #     else:
-    #         await self.close()
-    #         return
-
-    #     await self.channel_layer.group_send(
-    #         self.room_group_name,
-    #         {
-    #             'type': 'chat_message',
-    #             'message': message,
-    #             'username': username
-    #         }
-    #     )
-
     async def chat_message(self, event):
-        message = event['message']
-        username = event['username']
-
         await self.send(text_data=json.dumps({
-            'message': message,
-            'username': username
+            "message": event["message"],
+            "username": event["username"],
         }))
