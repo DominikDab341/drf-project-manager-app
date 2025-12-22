@@ -9,6 +9,7 @@ import TasksListModal from "../components/Modals/TasksListModal.jsx";
 import TaskDetailsModal from "../components/Modals/TaskDetailsModal.jsx"
 import AddMemberModal from "../components/Modals/AddMemberModal.jsx";
 import MembersWithoutTasksModal from '../components/Modals/MembersWithoutTasksModal.jsx'
+import Chat from "../components/Chat.jsx";
 
 const MODALS = {
     TASKS: 'tasks',
@@ -105,6 +106,8 @@ function ProjectDetails() {
             
                 <div className='project-details-chat'>
                     <h3>Chat</h3>
+                    <Chat 
+                    projectId={projectId} />
                 </div>  
 
             </div>

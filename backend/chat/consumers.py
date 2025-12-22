@@ -23,10 +23,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
-        )
+        room = getattr(self, "room_group_name", None)
+        if room:
+            await self.channel_layer.group_discard(room, self.channel_name)
 
     async def receive(self, text_data):
         data = json.loads(text_data)
