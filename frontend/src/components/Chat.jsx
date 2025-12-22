@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import apiClient from "../api/apiClient";
 import { useUser } from "../context/UserContext";
+import '../css/Chat.css';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -67,7 +68,6 @@ function Chat({ projectId }) {
         <span className="chat-status">
             {readyState === ReadyState.OPEN ? "Połączono" : "Łączenie..."}
         </span>
-        <span className="chat-user">{user?.username}</span>
       </div>
 
       {error && <div className="chat-error">{error}</div>}
