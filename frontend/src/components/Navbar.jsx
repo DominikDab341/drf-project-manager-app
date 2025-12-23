@@ -5,29 +5,27 @@ function Navbar() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // fetch('http://127.0.0.1:8000/api/logout/', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-    //     }
-    // });
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     navigate('/login');
   };
 
   return (
-    <div className="navbar">
-      <div className="navbar-home">
-        <Link to="/">Home</Link>
+    <nav className="navbar">
+      <div className="navbar-brand">
+        <Link to="/" className="navbar-logo">Home</Link>
       </div>
-      <div>
-        <span>Project Manager</span>
+      
+      <div className="navbar-center">
+        <span className="navbar-title">Project Manager</span>
       </div>
-      <div>
-        <button onClick={handleLogout}>Logout</button>
+      
+      <div className="navbar-actions">
+        <button className="navbar-button" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
-    </div>
+    </nav>
   );
 }
 
