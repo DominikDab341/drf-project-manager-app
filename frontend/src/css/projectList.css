@@ -1,0 +1,39 @@
+.project-list-container {
+  /* To i tak jest nadpisywane przez home.css, ale dla porządku: */
+  display: flex;
+  justify-content: center; 
+  align-items: center;
+  margin-top: 50px;
+  width: 100%;
+}
+
+.project-list-box {
+  border: 2px solid #9370db;
+  border-radius: 10px;
+  padding: 1rem 2rem;
+  max-width: 300px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Reszta bez zmian... */
+.project-list-box-item {
+  border-bottom: 1px solid #9370db;
+  margin-bottom: 20px;
+}
+
+.project-description {
+  font-size: small;
+  color: gray;
+}
+
+.project-title {
+  cursor: pointer;
+  transition: transform 0.3s;
+  font-weight: 600;
+}
+
+.project-title:hover {
+  color: #9370db;
+  transform: translate(0, 2px);
+}

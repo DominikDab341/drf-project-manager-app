@@ -9,7 +9,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
-
+  overflow-y: auto;
   animation: fadeIn 0.3s ease;
 }
 
@@ -18,10 +18,16 @@
   padding: 2rem;
   border-radius: 10px;
   border: 2px solid #9370db;
+  
   width: 90%;
-  max-width: 500px;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  
   position: relative;
+  box-sizing: border-box;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  margin: 20px auto;
 }
 
 .modal-close-btn {
@@ -34,6 +40,7 @@
   cursor: pointer;
   color: #9370db;
   font-weight: bold;
+  z-index: 1;
 }
 
 .modal-close-btn:hover {
@@ -47,4 +54,22 @@
   to {
     opacity: 1;
   }
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: #9370db;
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: #7a5bbf;
 }

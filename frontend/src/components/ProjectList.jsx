@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import apiClient from '../api/apiClient';
 import '../css/pagination.css';
 import { useNavigate } from 'react-router-dom';
+import '../css/ProjectList.css';
 
 function ProjectList() {
   const [projectList, setProjectList] = useState([]);

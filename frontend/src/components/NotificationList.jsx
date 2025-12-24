@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import apiClient from '../api/apiClient';
 import '../css/pagination.css';
+import '../css/NotificationList.css';
 
 function NotificationList() {
   const [notifications, setNotifications] = useState([]);

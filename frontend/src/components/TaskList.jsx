@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import apiClient from '../api/apiClient';
+import '../css/TaskList.css';
 
 function TaskList({ projectId = null, onTaskClick }) {
   const [taskList, setTaskList] = useState([]);
