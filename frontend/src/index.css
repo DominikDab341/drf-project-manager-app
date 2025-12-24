@@ -1,11 +1,15 @@
 :root {
+  --bg-app: #f4f6f9;
+  --bg-card: #ffffff;
+  
+  --text-main: #213547;
+  --text-muted: #6c757d;
+  
+  --primary: #9370db;
+  
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,15 +17,17 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  
+  /* Aplikujemy nasze globalne tło i kolor tekstu */
+  background-color: var(--bg-app);
+  color: var(--text-main);
 }
