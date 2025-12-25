@@ -6,14 +6,23 @@ const UserContext = createContext(null);
 
 export const UserProvider = ({children}) => {
     const [user, setUser] = useState(null);
-    
+    const [loading, setLoading] = useState(true);
 
     const fetchUser = async () => {
+        const accessToken = localStorage.getItem('accessToken')
+
+        if (!accessToken){
+            setLoading(false);
+            return
+        }
+
         try {
             const response = await apiClient.get('/users/me');
             setUser(response.data)
         } catch (error) {
             console.error("fetch user details error: ", error);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -22,8 +31,8 @@ export const UserProvider = ({children}) => {
     }, [])
 
     return (
-        <UserContext.Provider value = {{user, fetchUser, setUser}}>
-            {children}
+        <UserContext.Provider value = {{user, fetchUser, setUser, loading}}>
+            {!loading && children}
         </UserContext.Provider>
     );
 }
