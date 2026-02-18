@@ -19,24 +19,18 @@ Aplikacja do zarządzania projektami i zadaniami z wbudowanym czatem w czasie rz
 ## 🛠 Technologie
 
 ### Backend
-
-| Technologia | Opis |
-|---|---|
-| Python 3.13 / Django 5.1 
-| Django REST Framework
-| Django Channels + Daphne 
-| channels-redis 
-| SimpleJWT 
-| drf-spectacular 
-| SQLite 
+-Python 3.13 / Django 5.1 
+- Django REST Framework
+- Django Channels + Daphne 
+- channels-redis 
+- SimpleJWT 
+- drf-spectacular 
+- SQLite 
 
 ### Frontend
-
-| Technologia | Opis |
-|---|---|
-| React 18 
-| Vite 
-| react-use-websocket 
+- React 18 
+- Vite 
+- react-use-websocket 
 
 ---
 
